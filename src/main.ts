@@ -30,6 +30,6 @@ async function bootstrap() {
   await configureMiddleware(app);
 
   await app.listen();
-  logger.log(`Products Microservice running on http://localhost:${envs.port}`);
+  logger.log(`Products Microservice running on port: ${envs.port}`);
 }
 bootstrap();
