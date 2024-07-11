@@ -1,8 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { envs } from './config';
+
+async function configureMiddleware(app: INestMicroservice) {
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+}
 
 async function bootstrap() {
   const logger = new Logger('MS Products - Bootstrap');
@@ -17,13 +27,7 @@ async function bootstrap() {
     },
   );
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+  await configureMiddleware(app);
 
   await app.listen();
   logger.log(`Products Microservice running on http://localhost:${envs.port}`);
