@@ -1,11 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-  NotFoundException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { PrismaClient } from '@prisma/client';
 import { CreateProductDto, UpdateProductDto } from './dto/index';
@@ -31,7 +24,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       this.logger.error(err.message);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
-        message: `Bad request: ${err.message}`,
+        message: `${err.message}`,
       });
     }
   }
@@ -70,10 +63,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
         },
       };
     } catch (err) {
-      this.logger.error(`Error retrieving products: ${err.message}`);
+      this.logger.error(`${err.message}`);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
-        message: `Error retrieving products: ${err.message}`,
+        message: `${err.message}`,
       });
     }
   }
@@ -95,15 +88,16 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       return product;
     } catch (err) {
-      this.logger.error(`Product not found: ${err.message}`);
+      this.logger.error(`${err.message}`);
       throw new RpcException({
-        status: HttpStatus.NOT_FOUND,
-        message: `Product not found: ${err.message}`,
+        status: HttpStatus.BAD_REQUEST,
+        message: `${err.message}`,
       });
     }
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { id: __, ...data } = updateProductDto;
     try {
       if (!data) {
@@ -124,10 +118,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       return product;
     } catch (err) {
-      this.logger.error(`Error updating product: ${err.message}`);
+      this.logger.error(`${err.message}`);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
-        message: `Error updating product: ${err.message}`,
+        message: `${err.message}`,
       });
     }
   }
@@ -147,10 +141,10 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       return product;
     } catch (err) {
-      this.logger.error(`Error deleting product: ${err.message}`);
+      this.logger.error(`${err.message}`);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
-        message: `Error deleting product: ${err.message}`,
+        message: `${err.message}`,
       });
     }
   }
