@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { CreateProductDto, UpdateProductDto } from './dto/index';
 import { PaginationDto } from 'src/common';
 
@@ -21,6 +21,19 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       return product;
     } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError) {
+        if (err.code === 'P2002') {
+          const failedField = (err.meta?.['target'] as string[])?.join(', ');
+          this.logger.error(
+            `Unique constraint failed for field(s): ${failedField}`,
+          );
+          throw new RpcException({
+            status: HttpStatus.CONFLICT,
+            message: `Unique constraint failed on the fields: (${failedField})`,
+          });
+        }
+      }
+
       this.logger.error(err.message);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
