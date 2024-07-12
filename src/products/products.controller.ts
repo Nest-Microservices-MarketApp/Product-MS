@@ -8,28 +8,28 @@ import { PaginationDto, ResponseDto } from 'src/common';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @MessagePattern('create-product')
+  @MessagePattern('createProduct')
   async create(@Payload() createProductDto: CreateProductDto) {
     const payload = await this.productsService.create(createProductDto);
 
     return new ResponseDto(HttpStatus.CREATED, 'Created', payload);
   }
 
-  @MessagePattern('find-all-products')
+  @MessagePattern('findAllProducts')
   async findAll(@Payload() paginationDto: PaginationDto) {
     const payload = await this.productsService.findAll(paginationDto);
 
     return new ResponseDto(HttpStatus.OK, 'Success', payload);
   }
 
-  @MessagePattern('find-one-product')
+  @MessagePattern('findOneProduct')
   async findOne(@Payload('id', ParseIntPipe) id: number) {
     const payload = await this.productsService.findOne(id);
 
     return new ResponseDto(HttpStatus.OK, 'Success', payload);
   }
 
-  @MessagePattern('update-product')
+  @MessagePattern('updateProduct')
   async update(@Payload() updateProductDto: UpdateProductDto) {
     const payload = await this.productsService.update(
       updateProductDto.id,
@@ -39,7 +39,7 @@ export class ProductsController {
     return new ResponseDto(HttpStatus.OK, 'Updated', payload);
   }
 
-  @MessagePattern('remove-product')
+  @MessagePattern('removeProduct')
   async remove(@Payload('id', ParseIntPipe) id: number) {
     const payload = await this.productsService.remove(id);
 
