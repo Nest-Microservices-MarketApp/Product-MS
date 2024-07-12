@@ -1,4 +1,4 @@
-import { IResponse } from '../interfaces/response.interface';
+import { IResponse } from '../index';
 
 export class ResponseDto<T> implements IResponse {
   statusCode: number;
