@@ -21,6 +21,7 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
 
       return product;
     } catch (err) {
+      // validation that the data in the fields is unique
       if (err instanceof Prisma.PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
           const failedField = (err.meta?.['target'] as string[])?.join(', ');
@@ -157,6 +158,36 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
       this.logger.error(`${err.message}`);
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
+        message: `${err.message}`,
+      });
+    }
+  }
+
+  async validateId(ids: number[]) {
+    ids = [...new Set(ids)];
+
+    try {
+      const products = await this.product.findMany({
+        where: {
+          id: {
+            in: ids,
+          },
+          deleted: false,
+        },
+      });
+
+      if (products.length !== ids.length) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'One or more products not found',
+        });
+      }
+
+      return products;
+    } catch (err) {
+      this.logger.error(`Error validating IDs: ${err.message}`);
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
         message: `${err.message}`,
       });
     }

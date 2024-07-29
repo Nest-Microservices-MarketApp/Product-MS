@@ -45,4 +45,11 @@ export class ProductsController {
 
     return new ResponseDto(HttpStatus.OK, 'Deleted', payload);
   }
+
+  @MessagePattern('validateId')
+  async validateId(@Payload() ids: number[]) {
+    const payload = await this.productsService.validateId(ids);
+
+    return new ResponseDto(HttpStatus.OK, 'Success', payload);
+  }
 }
